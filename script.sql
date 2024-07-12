@@ -87,5 +87,29 @@ $$
 ------------------------------------------------------------------
 -- 5. Limpeza de valores NULL
 --escreva a sua solução aqui
-
+DO $$
+DECLARE
+cur_educ_del REFCURSOR;
+tupla RECORD;
+BEGIN
+OPEN cur_educ_del SCROLL FOR
+SELECT
+*
+FROM
+tb_estudo;
+LOOP
+FETCH cur_educ_del INTO tupla;
+EXIT WHEN NOT FOUND;
+IF tupla.studentID IS NULL THEN
+DELETE FROM tb_estudo WHERE CURRENT OF cur_educ_del;
+END IF;
+END LOOP;
+LOOP
+FETCH BACKWARD FROM cur_educ_del INTO tupla;
+EXIT WHEN NOT FOUND;
+RAISE NOTICE '%', tupla;
+END LOOP;
+CLOSE cur_educ_del;
+END;
+$$
 -- ----------------------------------------------------------------
